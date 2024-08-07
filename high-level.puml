@@ -37,6 +37,17 @@ Container(robB, "Robot A", $sprite="AzureSqlDatabase")
 System_Ext(robA, "Robot B", $sprite="robot")
 
 
+
+Person(p1, "Person", $sprite="person")
+Person_Ext(p2, "Person_Ext", $sprite="person")
+System(p3, "System", $sprite="person")
+System_Ext(p4, "System_Ext", $sprite="person")
+Container(p5, "Container", $sprite="person")
+' Relationship(p6, "Relationship", $sprite="person")
+' Boundary(p7, "Boundary", $sprite="person")
+' System_Boundary(p8, "System_Boundary", $sprite="person")
+
+
 SHOW_LEGEND()
 
 

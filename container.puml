@@ -1,0 +1,32 @@
+@startuml Basic Sample
+!include <C4/C4_Container>
+!include <azure/AzureCommon>
+!include <azure/AzureC4Integration>
+!include <azure/Databases/AzureRedisCache>
+!include <azure/Databases/AzureCosmosDb>
+!include <azure/Databases/AzureSqlDatabase>
+!include <azure/Web/AzureWebApp>
+!include <azure/Web/AzureCDN>
+!include <azure/Web/AzureSearch>
+!include <azure/Storage/AzureBlobStorage>
+!include <azure/Storage/AzureQueueStorage>
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!include DEVICONS/msql_server.puml
+
+Person(p1, "Person", $sprite="person")
+Person_Ext(p2, "Person_Ext", $sprite="person")
+System(p3, "System", $sprite="person")
+System_Ext(p4, "System_Ext", $sprite="person")
+
+Boundary(p7, "Boundary"){
+    System_Boundary(p8, "System_Boundary"){
+        Container(p5, "Container", $sprite="person")
+    }
+}
+Rel_L(p1, p2, "contact")
+
+ContainerDb(db1, "database", $sprite="AzureSqlDatabase")
+ContainerDb(db2, "database","ms", "has data", $sprite="msql_server")
+
+@enduml
