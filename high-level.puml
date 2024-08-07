@@ -1,0 +1,88 @@
+@startuml
+!pragma revision 1
+
+!include <C4/C4_Container>
+!include <azure/AzureCommon>
+!include <azure/AzureC4Integration>
+!include <azure/Databases/AzureRedisCache>
+!include <azure/Databases/AzureCosmosDb>
+!include <azure/Databases/AzureSqlDatabase>
+!include <azure/Web/AzureWebApp>
+!include <azure/Web/AzureCDN>
+!include <azure/Web/AzureSearch>
+!include <azure/Storage/AzureBlobStorage>
+!include <azure/Storage/AzureQueueStorage>
+
+' !$ICONURL = "https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/v3.0.0/icons"
+' !include $ICONURL/common.puml
+' !include $ICONURL/devicons/mysql.puml
+' !include $ICONURL/font-awesome/database.puml
+' !include $ICONURL/font-awesome-5/database.puml
+
+' <prefix>_<name>(alias)
+' <prefix>_<name>(alias,label)
+' <prefix>_<name>(alias,label,shape)
+' <prefix>_<name>(alias,label,shape,color)
+' DEV_MYSQL(db1)
+' DEV_MYSQL(db2,label of db2)
+' DEV_MYSQL(db3,label of db3,database)
+' DEV_MYSQL(db4,label of db4,database,red) #DeepSkyBlue
+' FA5_DATABASE(db5,LIVE,database,white) #RoyalBlue
+
+
+Person(pB, "Sam1", $sprite="person2")
+Person_Ext(pA, "Bob", $sprite="person")
+
+Container(robB, "Robot A", $sprite="AzureSqlDatabase")
+System_Ext(robA, "Robot B", $sprite="robot")
+
+
+SHOW_LEGEND()
+
+
+
+LAYOUT_WITH_LEGEND()
+
+Person(user, "User")
+
+Container(spa, "Single-Page App", "Angular, JS")
+AzureWebApp(webApp, "Web & API App", "ASP.NET Core MVC 2.1, C#", "Delivers the SPA and provides RESTful web APIs which are consumed from the SPA")
+AzureCDN(cdn, "CDN", "Akamai S2", "caches publicly available content for lower latency and faster delivery of content")
+
+AzureBlobStorage(staticBlobStorage, "Static Content", "General Purpose v2, Hot, LRS")
+
+AzureQueueStorage(queue, "Queue", "General Purpose v2, LRS")
+AzureSearch(search, "Search Index", "Standard S1", "provides search suggestions, fuzzy search, and language-specific search, consolidates a single search index from multiple data stores")
+AzureRedisCache(redisCache, "Cache", "Standard C2")
+
+AzureCosmosDb(cosmosDb, "Document DB", "SQL API, 400 RUs")
+AzureSqlDatabase(sqlDb, "SQL DB", "Standard S3")
+
+AzureWebApp(webJob, "Web Job", "WebJobs SDK v3, C#", "runs long-running tasks in the background")
+
+Rel_R(user, spa, "Uses", "HTTPS")
+Rel(user, webApp, "Uses", "HTTPS")
+Rel(user, cdn, "Uses", "HTTPS")
+
+Rel_Neighbor(spa, webApp, "Uses", "JSON, HTTPS")
+Rel_Back_Neighbor(spa, webApp, "Delivers")
+
+Rel_Neighbor(cdn, staticBlobStorage, "Reads from")
+
+Rel(webApp, queue, "Puts background jobs into")
+Rel(webApp, sqlDb, "Reads from and writes to", "ADO.NET")
+Rel(webApp, cosmosDb, "Reads from and writes to", "SQL API")
+Rel(webApp, redisCache, "Reads from and writes to")
+Rel(webApp, search, "Reads from")
+
+Rel_U(webJob, queue, "Gets next job from")
+Rel_U(webJob, sqlDb, "Reads from and writes to", "ADO.NET")
+Rel_U(webJob, cosmosDb, "Reads from and writes to", "SQL API")
+Rel_U(webJob, redisCache, "Reads from and writes to")
+
+Rel_Back_Neighbor(cosmosDb, search, "Builds index from")
+Rel_Neighbor(search, sqlDb, "Builds index from")
+
+Lay_D(search, webJob)
+
+@enduml
