@@ -1,0 +1,75 @@
+@startuml
+
+' !include <C4/C4_Container>
+' !include <C4/C4_Context>
+' !include <C4/C4_Component>
+' !include <C4/C4_Deployment>
+!include <C4/C4_Sequence>
+!include <azure/AzureCommon>
+' !include <azure/AzureC4Integration>
+!include <azure/Compute/AzureMeshApplication>
+
+' !include <awslib14/AWSC4Integration>
+!include <awslib14/AWSCommon>
+!include <awslib14/Containers/ElasticKubernetesService>
+
+!include <k8s/Common>
+' !include <k8s/Context>
+' !include <k8s/Simplified>
+!include <k8s/OSS/all>
+
+' !include <tupadr3/common>
+!include <tupadr3/font-awesome/mobile_phone>
+!include <tupadr3/font-awesome/server>
+
+
+
+' AddPersonTag(tagStereo, ?bgColor, ?fontColor, ?borderColor, ?shadowing, ?shape, ?sprite, ?legendText, ?legendSprite, ?type, ?borderStyle, ?borderThickness)
+' AddExternalPersonTag(tagStereo, ?bgColor, ?fontColor, ?borderColor, ?shadowing, ?shape, ?sprite, ?legendText, ?legendSprite, ?type, ?borderStyle, ?borderThickness)
+' AddSystemTag(tagStereo, ?bgColor, ?fontColor, ?borderColor, ?shadowing, ?shape, ?sprite, ?legendText, ?legendSprite, ?type, ?borderStyle, ?borderThickness)
+' AddExternalSystemTag(tagStereo, ?bgColor, ?fontColor, ?borderColor, ?shadowing, ?shape, ?sprite, ?legendText, ?legendSprite, ?type, ?borderStyle, ?borderThickness)
+' AddComponentTag(tagStereo, ?bgColor, ?fontColor, ?borderColor, ?shadowing, ?shape, ?sprite, ?techn, ?legendText, ?legendSprite, ?borderStyle, ?borderThickness)
+' AddExternalComponentTag(tagStereo, ?bgColor, ?fontColor, ?borderColor, ?shadowing, ?shape, ?sprite, ?techn, ?legendText, ?legendSprite, ?borderStyle, ?borderThickness)
+' AddContainerTag(tagStereo, ?bgColor, ?fontColor, ?borderColor, ?shadowing, ?shape, ?sprite, ?techn, ?legendText, ?legendSprite, ?borderStyle, ?borderThickness)
+' AddExternalContainerTag(tagStereo, ?bgColor, ?fontColor, ?borderColor, ?shadowing, ?shape, ?techn, ?sprite, ?legendText, ?legendSprite, ?borderStyle, ?borderThickness)
+' AddNodeTag(tagStereo, ?bgColor, ?fontColor, ?borderColor, ?shadowing, ?shape, ?sprite, ?techn, ?legendText, ?legendSprite, ?borderStyle, ?borderThickness) (node specific: $type reuses $techn definition of $tags)
+
+!$Client_Color = "77CC22FF"
+!$Server_Color_1 = "2277CCFF"
+!$Server_Color_2 = "7700CCFF"
+!$Server_Color_3 = "007722FF"
+
+
+AddSystemTag("client", $bgColor=$Client_Color, $legendText="team1", $borderColor=$Client_Color, $borderThickness="0")
+AddSystemTag("server1", $bgColor=$Server_Color_1, $legendText="team2", $borderColor=$Server_Color_1, $borderThickness="0")
+AddSystemTag("server2", $bgColor=$Server_Color_2, $legendText="team3", $borderColor=$Server_Color_2, $borderThickness="0")
+AddSystemTag("server3", $bgColor=$Server_Color_3, $legendText="team4", $borderColor=$Server_Color_3, $borderThickness="0")
+
+System(client, "client", $sprite="mobile_phone", $tags="client")
+System(server1, "server1", $sprite="AzureMeshApplication", $tags="server1")
+System(server2, "server2", $sprite="ElasticKubernetesService", $tags="server2")
+System(server3, "server3", $sprite="KubernetesPod,scale=0.5", $tags="server3")
+
+activate client
+Rel(client, server1, "hello")
+activate server1
+
+alt successful case
+    Rel(server1, client, "Authentication Accepted")
+else some kind of failure
+    loop 1000 times
+        Rel(client, server1, "DNS Attack")
+    end
+end
+
+Rel(server1, client, "world!")
+deactivate server1
+
+activate server2
+Rel(server2, server3, "hello")
+activate server3
+Rel(server3, server2, "world!")
+deactivate server3
+
+SHOW_LEGEND()
+@enduml
